@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structural Drawing Analysis Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        industrial: {
+                            50: '#f5f7fa', 100: '#eaeef4', 200: '#d0dae6', 300: '#a8bbd1',
+                            400: '#7896b8', 500: '#5778a0', 600: '#445f85', 700: '#384d6d',
+                            800: '#31425c', 900: '#2c394e', 950: '#1d2534',
+                        },
+                        steel: {
+                            50: '#f6f7f9', 100: '#eceef2', 200: '#d5dae2', 300: '#b0bac9',
+                            400: '#8595ab', 500: '#677891', 600: '#526078', 700: '#434e62',
+                            800: '#3a4353', 900: '#343a47', 950: '#23272f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .btn-primary {
+            background-color: #4f5d75;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #3d4a5c;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .btn-success-pulse {
+            background-color: #10b981 !important;
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 0.5rem !important;
+            border: 3px solid #10b981 !important;
+            animation: pulse-border 2s ease-in-out infinite !important;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7) !important;
+            cursor: pointer !important;
+        }
+        .btn-success-pulse:hover {
+            background-color: #059669 !important;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes pulse-border {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(79, 93, 117, 0.5), 0 0 40px rgba(79, 93, 117, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(79, 93, 117, 0.8), 0 0 60px rgba(79, 93, 117, 0.5);
+                transform: scale(1.05);
+            }
+        }
+        .btn-pulse {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        .z-60 {
+            z-index: 60;
+        }
+        .modal-close-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .modal-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+    </style>
+</head>
+<body class="bg-industrial-50 text-steel-900">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-industrial-900 via-industrial-800 to-steel-900 text-white py-20 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Structural Drawing Analysis Platform
+            </h1>
+            <p class="text-xl md:text-2xl text-industrial-200 mb-8 max-w-3xl mx-auto">
+                AI-Powered Tendon Detection and Analysis for Construction Plans
+            </p>
+            <p class="text-lg text-industrial-300 mb-10 max-w-2xl mx-auto">
+                Upload your PDF structural drawings and let our advanced computer vision system 
+                automatically detect and analyze tendons with precision and speed.
+            </p>
+            <button onclick="scrollToUpload()" class="bg-industrial-500 hover:bg-industrial-600 text-white font-bold py-4 px-10 rounded-lg text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                Get Started
+            </button>
+            
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                    <div class="text-4xl mb-4">🔍</div>
+                    <h3 class="text-xl font-semibold mb-2">Advanced OCR</h3>
+                    <p class="text-industrial-200">State-of-the-art optical character recognition for accurate text extraction</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold mb-2">Fast Processing</h3>
+                    <p class="text-industrial-200">GPU-accelerated analysis for rapid results on multi-page documents</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-semibold mb-2">Detailed Results</h3>
+                    <p class="text-industrial-200">Comprehensive tendon detection with visual annotations and data export</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="app" class="pb-16"></div>
+
+    <!-- Footer -->
+    <footer class="bg-industrial-900 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-industrial-300">© 2026 Structural Drawing Analysis Platform. Powered by Truestack AI.</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = '';  // Empty string for same-origin requests
+        let currentJobId = null;
+        let processingComplete = false;
+        let pollInterval = null;
+
+        function scrollToUpload() {
+            document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderUploadSection() {
+            return `
+                <div id="upload-section" class="max-w-4xl mx-auto px-4 py-16">
+                    <div class="card">
+                        <h2 class="text-3xl font-bold text-industrial-900 mb-6 text-center">Upload Your PDF Drawing</h2>
+                        
+                        <div id="dropzone" class="border-4 border-dashed border-industrial-300 rounded-lg p-12 text-center transition-all duration-200 bg-gray-50">
+                            <div class="text-6xl mb-4">📄</div>
+                            <p class="text-xl text-steel-700 mb-4">Drag and drop your map's PDF file here</p>
+                            <p class="text-steel-500 mb-6">or</p>
+                            <input type="file" id="fileInput" accept=".pdf" class="hidden">
+                            <button onclick="document.getElementById('fileInput').click()" class="btn-primary">
+                                Browse Files
+                            </button>
+                            <p class="text-sm text-steel-500 mt-4">Supported format: PDF (max 50MB)</p>
+                        </div>
+                        
+                        <div id="fileInfo" class="hidden mt-6 p-4 bg-industrial-50 rounded-lg border border-industrial-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="text-3xl">📋</div>
+                                    <div>
+                                        <p id="fileName" class="font-semibold text-steel-900"></p>
+                                        <p id="fileSize" class="text-sm text-steel-600"></p>
+                                    </div>
+                                </div>
+                                <button onclick="uploadFile()" id="uploadBtn" class="btn-primary">
+                                    🚀 Plan and Process
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="errorMsg" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p class="text-red-700"></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProcessingSection(status) {
+            const progress = status.progress || 0;
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-8">
+                    <div class="card">
+                        <h2 class="text-3xl font-bold text-industrial-900 mb-6 text-center">Processing Your Document</h2>
+                        
+                        <div class="text-center mb-6">
+                            <div class="spinner rounded-full h-20 w-20 border-b-4 border-industrial-600 mx-auto mb-4"></div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex justify-between text-sm text-steel-600 mb-2">
+                                <span>${status.message || 'Processing...'}</span>
+                                <span>${Math.round(progress)}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                                <div class="bg-gradient-to-r from-industrial-500 to-industrial-600 h-4 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+
+                        ${status.total_pages > 0 ? `
+                            <div class="text-center mb-8">
+                                <p class="text-lg text-steel-700">
+                                    Processing page <span class="font-bold text-industrial-700">${status.current_page}</span> of
+                                    <span class="font-bold text-industrial-700">${status.total_pages}</span>
+                                </p>
+                            </div>
+                        ` : ''}
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-lg border-2 ${status.status !== 'queued' ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-gray-50'}">
+                                <div class="text-2xl mb-2">📤</div>
+                                <p class="font-semibold text-steel-900">Upload</p>
+                                <p class="text-sm text-steel-600">File received</p>
+                            </div>
+                            <div class="p-4 rounded-lg border-2 ${status.status === 'processing' || status.status === 'completed' ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-gray-50'}">
+                                <div class="text-2xl mb-2">🔍</div>
+                                <p class="font-semibold text-steel-900">Analysis</p>
+                                <p class="text-sm text-steel-600">OCR & Detection</p>
+                            </div>
+                            <div class="p-4 rounded-lg border-2 ${status.status === 'completed' ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-gray-50'}">
+                                <div class="text-2xl mb-2">✨</div>
+                                <p class="font-semibold text-steel-900">Complete</p>
+                                <p class="text-sm text-steel-600">Results ready</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderResultsSection(results) {
+            return `
+                <div class="max-w-6xl mx-auto px-4 py-8">
+                    <div class="card">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                            <div>
+                                <h2 class="text-3xl font-bold text-industrial-900 mb-2">Analysis Complete</h2>
+                                <p class="text-steel-600">Successfully processed ${results.total_pages} page${results.total_pages !== 1 ? 's' : ''}</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="downloadAll()" class="bg-steel-600 hover:bg-steel-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+                                    📥 Download All
+                                </button>
+                                <button onclick="resetApp()" class="btn-primary">
+                                    ➕ New Upload
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div class="bg-gradient-to-br from-industrial-50 to-industrial-100 p-6 rounded-lg border border-industrial-200">
+                                <div class="text-3xl mb-2">📄</div>
+                                <p class="text-2xl font-bold text-industrial-900">${results.total_pages}</p>
+                                <p class="text-steel-600">Pages Processed</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                                <div class="text-3xl mb-2">✅</div>
+                                <p class="text-2xl font-bold text-green-900">${results.results.length}</p>
+                                <p class="text-steel-600">Results Generated</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                                <div class="text-3xl mb-2">🎯</div>
+                                <p class="text-2xl font-bold text-blue-900">100%</p>
+                                <p class="text-steel-600">Success Rate</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-bold text-industrial-900 mb-4">Annotated Drawings</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                ${results.results.map((result, index) => `
+                                    <div class="bg-gray-50 rounded-lg border-2 border-industrial-200 overflow-hidden hover:border-industrial-500 transition-all duration-200 cursor-pointer group">
+                                        <div class="aspect-video bg-gradient-to-br from-industrial-100 to-steel-100 flex items-center justify-center relative overflow-hidden">
+                                            <img src="${API_BASE_URL}/api/download/${currentJobId}/${result.filename}"
+                                                 alt="Page ${result.page + 1}"
+                                                 class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
+                                                 onclick="viewImage('${API_BASE_URL}/api/download/${currentJobId}/${result.filename}', ${result.page + 1})">
+                                        </div>
+                                        <div class="p-4">
+                                            <p class="font-semibold text-steel-900 mb-2">Page ${result.page + 1}</p>
+                                            <button onclick="downloadImage('${result.filename}')"
+                                                    class="w-full bg-industrial-600 hover:bg-industrial-700 text-white py-2 px-4 rounded transition-colors duration-200">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+
+            if (!currentJobId && !processingComplete) {
+                app.innerHTML = renderUploadSection();
+                setupUploadHandlers();
+            } else if (currentJobId && !processingComplete) {
+                // Will be updated by polling
+            } else if (processingComplete && currentJobId) {
+                // Will be updated when results are fetched
+            }
+        }
+
+        function setupUploadHandlers() {
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('border-industrial-500', 'bg-industrial-50');
+                dropzone.classList.remove('border-industrial-300', 'bg-gray-50');
+            });
+
+            dropzone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('border-industrial-500', 'bg-industrial-50');
+                dropzone.classList.add('border-industrial-300', 'bg-gray-50');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('border-industrial-500', 'bg-industrial-50');
+                dropzone.classList.add('border-industrial-300', 'bg-gray-50');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+        }
+
+        let selectedFile = null;
+
+        function handleFileSelect(file) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.classList.add('hidden');
+
+            if (file.type !== 'application/pdf') {
+                showError('Please upload a PDF file');
+                return;
+            }
+
+            if (file.size > 50 * 1024 * 1024) {
+                showError('File size must be less than 50MB');
+                return;
+            }
+
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+            document.getElementById('fileInfo').classList.remove('hidden');
+
+            // Add pulsing animation to the upload button to indicate call to action
+            setTimeout(() => {
+                const uploadBtn = document.getElementById('uploadBtn');
+                if (uploadBtn) {
+                    uploadBtn.classList.add('btn-pulse');
+                }
+            }, 100);
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.querySelector('p').textContent = message;
+            errorMsg.classList.remove('hidden');
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) return;
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.disabled = true;
+            uploadBtn.classList.remove('btn-pulse'); // Remove pulsing animation
+            uploadBtn.textContent = 'Uploading...';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('✅ Upload successful! Showing green animation...');
+                    currentJobId = data.job_id;
+
+                    // Change button to green with pulsing animation
+                    console.log('Changing button style to green with pulse...');
+                    uploadBtn.textContent = '✅ Upload Successful!';
+                    uploadBtn.disabled = true;
+                    uploadBtn.classList.remove('btn-primary');
+                    uploadBtn.classList.add('btn-success-pulse');
+                    console.log('Button classes:', uploadBtn.className);
+
+                    // Hide file info and show success message
+                    document.getElementById('fileInfo').classList.add('hidden');
+
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'mt-4 p-4 bg-green-50 border-2 border-green-500 rounded-lg animate-pulse';
+                    successMsg.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="text-3xl">✅</div>
+                            <div>
+                                <p class="font-semibold text-green-900">Upload Successful!</p>
+                                <p class="text-sm text-green-700">Starting analysis in 3 seconds...</p>
+                            </div>
+                        </div>
+                    `;
+                    document.querySelector('.card').appendChild(successMsg);
+                    console.log('Success message added');
+
+                    // Delay starting polling to show the animation for 3 seconds
+                    setTimeout(() => {
+                        console.log('Starting polling now...');
+                        selectedFile = null;
+                        startPolling();
+                    }, 3000);
+                } else {
+                    showError(data.error || 'Upload failed. Please try again.');
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = '🚀 Plan and Process';
+                    uploadBtn.classList.remove('btn-success-pulse');
+                    uploadBtn.classList.add('btn-primary', 'btn-pulse');
+                }
+            } catch (error) {
+                showError('Upload failed. Please try again.');
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '🚀 Plan and Process';
+                uploadBtn.classList.remove('btn-success-pulse');
+                uploadBtn.classList.add('btn-primary', 'btn-pulse');
+            }
+        }
+
+        function startPolling() {
+            pollInterval = setInterval(checkStatus, 2000);
+            checkStatus();
+        }
+
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/status/${currentJobId}`);
+                const status = await response.json();
+
+                document.getElementById('app').innerHTML = renderProcessingSection(status);
+
+                if (status.status === 'completed') {
+                    clearInterval(pollInterval);
+                    processingComplete = true;
+                    fetchResults();
+                } else if (status.status === 'failed') {
+                    clearInterval(pollInterval);
+                    showError(status.message);
+                }
+            } catch (error) {
+                console.error('Error checking status:', error);
+            }
+        }
+
+        async function fetchResults() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/results/${currentJobId}`);
+                const results = await response.json();
+
+                document.getElementById('app').innerHTML = renderResultsSection(results);
+            } catch (error) {
+                showError('Failed to load results');
+            }
+        }
+
+        function downloadImage(filename) {
+            // Create a temporary link element to force download
+            const link = document.createElement('a');
+            link.href = `${API_BASE_URL}/api/download/${currentJobId}/${filename}`;
+            link.download = filename;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadAll() {
+            fetch(`${API_BASE_URL}/api/results/${currentJobId}`)
+                .then(res => res.json())
+                .then(results => {
+                    results.results.forEach((result, index) => {
+                        setTimeout(() => downloadImage(result.filename), index * 300);
+                    });
+                });
+        }
+
+        function viewImage(url, pageNum) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4';
+            modal.id = 'imageModal';
+
+            // Close on background click
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            };
+
+            // Close on Escape key
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+
+            modal.innerHTML = `
+                <!-- Close button -->
+                <button onclick="document.getElementById('imageModal').remove()"
+                        class="modal-close-btn fixed top-4 right-4 z-60 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-3 shadow-lg"
+                        title="Close (Esc)">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+
+                <!-- Image container -->
+                <div class="max-w-7xl max-h-full overflow-auto bg-white rounded-lg shadow-2xl" onclick="event.stopPropagation()">
+                    <div class="relative">
+                        <!-- Page number badge -->
+                        <div class="absolute top-4 left-4 bg-industrial-900 text-white px-4 py-2 rounded-lg shadow-lg z-10">
+                            <p class="font-semibold">Page ${pageNum}</p>
+                        </div>
+
+                        <!-- Image -->
+                        <img src="${url}" alt="Page ${pageNum}" class="w-full h-auto">
+
+                        <!-- Download button overlay -->
+                        <div class="absolute bottom-4 right-4 z-10">
+                            <button onclick="event.stopPropagation(); downloadImage('${url.split('/').pop()}')"
+                                    class="bg-industrial-600 hover:bg-industrial-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function resetApp() {
+            currentJobId = null;
+            processingComplete = false;
+            if (pollInterval) clearInterval(pollInterval);
+
+            // Reset upload button to original state
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                uploadBtn.classList.remove('btn-success-pulse');
+                uploadBtn.classList.add('btn-primary');
+                uploadBtn.textContent = 'Upload & Process';
+                uploadBtn.disabled = false;
+            }
+
+            render();
+            setTimeout(() => scrollToUpload(), 100);
+        }
+
+        // Initialize
+        render();
+    </script>
+</body>
+</html>
+
